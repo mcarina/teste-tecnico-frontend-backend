@@ -1,1 +1,26 @@
-<app-login-layout></app-login-layout>
+<app-login-layout 
+    title="Login"
+    subtitle="Login into your account"
+    primaryBtn="Login"
+    secondaryBtn="Signup"
+>
+
+<form [formGroup]="loginForm">
+    <app-primary-input
+        formName="email"
+        type="email"
+        label="Email"
+        placeholder="email@gmail.com"
+    >
+    </app-primary-input>
+
+    <app-primary-input
+    formName="password"
+    type="password"
+    label="Password"
+    >
+    </app-primary-input>
+
+</form>
+
+</app-login-layout>

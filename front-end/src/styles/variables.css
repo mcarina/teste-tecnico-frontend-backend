@@ -1,0 +1,8 @@
+:root {
+    --background: hsl(263, 25%, 94%);
+    --primary: hsl(262.1, 83.3%, 57.8%);
+    --secondary: hsl(263, 25%, 94%);
+    --gray-bg: hsl(0, 1%, 45%);
+    --card:rgb(255, 255, 255);
+    --radius: 8px;
+}

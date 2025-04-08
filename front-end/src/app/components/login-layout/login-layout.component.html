@@ -1,10 +1,13 @@
 <main>
-    <section>
-        <h2></h2>
-        <button></button>
-        <div>
-            <span>Or</span>
+    <section class="form-section">
+        <h1>{{ title }}</h1>
+        <h2>{{ subtitle }}</h2>
+
+        <ng-content></ng-content>
+
+        <div class="btn-wrapper">
+            <button class="btn-primary">{{ primaryBtn }}</button>
+            <button class="btn-secondary">{{ secondaryBtn }}</button>
         </div>
-        <button></button>
     </section>
 </main>

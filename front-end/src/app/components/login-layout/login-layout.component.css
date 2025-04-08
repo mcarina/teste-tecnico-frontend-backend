@@ -1,0 +1,62 @@
+main{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background);
+}
+
+/* ==== FORM SECTION ==== */
+.form-section{
+    padding: 35px;
+    border-radius: var(--radius);
+    background: var(--card);
+    gap: 34px
+}
+
+h1{
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 30px;
+    font-family:'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+h2{
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 42px;
+    color: var(--gray-bg);
+}
+
+/* FORM BUTTONS */
+.btn-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 24px;
+}
+
+button{
+    width: 100%;
+    border-radius:var(--radius);
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    padding: 12px 24px;
+}
+
+.btn-primary{
+    color: white;
+    background-color: var(--primary);
+}
+
+.btn-secondary{
+    color: var(--primary);
+}
+
+span{
+    color: var(--secondary);
+}

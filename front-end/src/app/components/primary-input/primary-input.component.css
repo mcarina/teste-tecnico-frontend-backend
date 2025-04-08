@@ -1,0 +1,17 @@
+.input-wrapper{
+    font-size: 16px;
+    color: var(--gray-bg);
+    text-align: start;
+}
+
+label{
+    margin-bottom: 10px;
+}
+
+input{
+    border: none;
+    border-radius: var(--radius);
+    background-color: var(--secondary);
+    padding: 12px 0 12px 20px;
+    width: 100%;
+}
