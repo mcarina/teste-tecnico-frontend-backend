@@ -6,8 +6,8 @@
         <ng-content></ng-content>
 
         <div class="btn-wrapper">
-            <button class="btn-primary">{{ primaryBtn }}</button>
-            <button class="btn-secondary">{{ secondaryBtn }}</button>
+            <button class="btn-primary" (click)="submit()" [disabled]="disabledPrimaryBtn">{{ primaryBtn }}</button>
+            <button class="btn-secondary" (click)="navigate()">{{ secondaryBtn }}</button>
         </div>
     </section>
 </main>

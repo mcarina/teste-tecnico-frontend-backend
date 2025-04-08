@@ -46,6 +46,10 @@ button{
     border: none;
     background: transparent;
     padding: 12px 24px;
+    
+    &:disabled{
+        opacity: 0.8;
+    }
 }
 
 .btn-primary{
