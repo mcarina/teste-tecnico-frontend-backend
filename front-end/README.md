@@ -1,4 +1,4 @@
-# Backend with C#
+# Front-end with Angular
 
 If you want to run only the frontend project, use the command below.
 
