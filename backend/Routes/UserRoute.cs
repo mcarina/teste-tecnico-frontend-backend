@@ -12,7 +12,7 @@ namespace User.Routes
         {
             var route = app.MapGroup("user");
 
-            route.MapGet("", async (UserContext context) =>
+            route.MapGet("", [Microsoft.AspNetCore.Authorization.Authorize] async (UserContext context) =>
             {
                 var users = await context.Users.ToListAsync();
                 return Results.Ok(users);
@@ -40,7 +40,7 @@ namespace User.Routes
                 });
             });
 
-            route.MapPut("/{id:guid}", async (Guid id, UserRequest req, UserContext context) =>
+            route.MapPut("/{id:guid}", [Microsoft.AspNetCore.Authorization.Authorize] async (Guid id, UserRequest req, UserContext context) =>
             {
                 var user = await context.Users.FindAsync(id);
                 if (user == null)
@@ -59,7 +59,7 @@ namespace User.Routes
                 return Results.Ok(user);
             });
 
-            route.MapDelete("/{id:guid}", async (Guid id, UserContext context) =>
+            route.MapDelete("/{id:guid}", [Microsoft.AspNetCore.Authorization.Authorize] async (Guid id, UserContext context) =>
             {
                 var user = await context.Users.FindAsync(id);
                 if (user == null)
