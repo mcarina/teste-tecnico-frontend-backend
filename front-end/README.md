@@ -1,6 +1,7 @@
 # Front-end with Angular
 
-If you want to run only the frontend project, use the command below.
+If you want to run only the frontend project, make sure you are inside the frontend project directory: `teste-tecnico-frontend-backend/front-end`.
+use the command below.
 
 To install and run the project, make sure you have **Docker** installed on your machine.
 
