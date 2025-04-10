@@ -4,6 +4,7 @@ namespace User.Routes
     using User.Models.Requests;
     using User.Data;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Identity;
 
     public static class UserRoute
     {
@@ -20,11 +21,23 @@ namespace User.Routes
 
             route.MapPost("", async (UserRequest req, UserContext context) =>
             {
-                var user = new UserModel( req.Name, req.Email, req.Password ); 
+                var tempUser = new UserModel(req.Name, req.Email, ""); // senha vazia só pra criar o objeto
+                var hasher = new PasswordHasher<UserModel>();
+                var hashedPassword = hasher.HashPassword(tempUser, req.Password);
+
+                var user = new UserModel(req.Name, req.Email, hashedPassword);
+
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
 
-                return Results.Created($"/user/{user.Id}", user);
+                return Results.Created($"/user/{user.Id}", new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Email,
+                    user.CreatedAt,
+                    user.UpdatedAt
+                });
             });
 
             route.MapPut("/{id:guid}", async (Guid id, UserRequest req, UserContext context) =>
