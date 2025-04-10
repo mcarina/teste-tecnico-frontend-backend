@@ -11,7 +11,12 @@ namespace User.Routes
         {
             var route = app.MapGroup("user");
 
-            route.MapGet("", () => new UserModel("Marcia", "marcia@example.com", "securepassword"));
+            route.MapGet("", async (UserContext context) =>
+            {
+                var users = await context.Users.ToListAsync();
+                return Results.Ok(users);
+            });
+
 
             route.MapPost("", async (UserRequest req, UserContext context) =>
             {
