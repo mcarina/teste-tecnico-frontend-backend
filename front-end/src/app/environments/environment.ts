@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:5000' // fallback opcional
+    apiUrl: 'http://localhost:5000'
   };
   
