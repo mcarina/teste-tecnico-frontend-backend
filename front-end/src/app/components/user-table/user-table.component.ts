@@ -13,6 +13,7 @@ import { ActionBtnComponent } from '../action-btn/action-btn.component';
   styleUrls: ['./user-table.component.css']
 })
 export class UserTableComponent {
+  
   users = [
     {
       name: 'João Silva',
