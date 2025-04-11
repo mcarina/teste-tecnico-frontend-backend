@@ -9,7 +9,7 @@ To start the project, follow the steps below:
 - 🖥️ Frontend
 Go to the frontend directory:
 ```
-cd frontend/
+cd front-end/
 ```
 Inside this folder, you will find a README.md with step-by-step instructions to run the frontend using Docker.
 
