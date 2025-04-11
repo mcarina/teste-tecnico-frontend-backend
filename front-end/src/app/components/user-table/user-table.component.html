@@ -1,0 +1,24 @@
+<div class="user-table-container">
+    <input type="text" placeholder="Search users..." class="user-search" />
+    
+    <table class="user-table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Data de Criação</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of users; let i = index">
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.createdAt }}</td>
+            <td class="actions-cell">
+            <app-action-btn [index]="i" [user]="user"></app-action-btn>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+</div>
