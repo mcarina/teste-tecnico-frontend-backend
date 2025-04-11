@@ -2,6 +2,7 @@
 
 To install and run the project, make sure you have **Docker** installed on your machine.
 
+Run the following command in your terminal:
 ```bash
 docker compose up -d
 ```
