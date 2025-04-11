@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -7,7 +9,8 @@ using User.Data;
 using User.Routes;
 
 var builder = WebApplication.CreateBuilder(args);
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "super-secret-key";
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "MyUltraSecureKeyThatIsAtLeast32Chars!!";
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -18,46 +21,47 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MyUltraSecureKeyThatIsAtLeast32Chars!!"))
         };
     });
 
 builder.Services.AddAuthorization();
 
-// builder.Services.AddSwaggerGen(options =>
-// {
-//     // 👇 Esta linha define a versão do OpenAPI e corrige o erro
-//     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-//     {
-//         Title = "User API",
-//         Version = "v1"
-//     });
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "userCrud API",
+        Version = "v1",
+        Description = "API para cadastro e autenticação de usuários"
+    });
 
-//     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-//     {
-//         Name = "Authorization",
-//         Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-//         Scheme = "Bearer",
-//         BearerFormat = "JWT",
-//         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-//         Description = "Informe: Bearer {seu token JWT}"
-//     });
+    // Configura o Swagger para usar JWT
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Por favor, insira o token JWT.",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT"
+    });
 
-//     options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-//     {
-//         {
-//             new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-//             {
-//                 Reference = new Microsoft.OpenApi.Models.OpenApiReference
-//                 {
-//                     Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-//                     Id = "Bearer"
-//                 }
-//             },
-//             Array.Empty<string>()
-//         }
-//     });
-// });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
 
 // Configuração do banco de dados usando o UserContext
 builder.Services.AddDbContext<UserContext>(options =>
@@ -70,7 +74,7 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -80,8 +84,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 // Registrando as rotas
 app.MapUserRoutes();
-app.MapLoginRoute();
 
 app.Run();

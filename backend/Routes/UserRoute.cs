@@ -3,8 +3,15 @@ namespace User.Routes
     using User.Models;
     using User.Models.Requests;
     using User.Data;
-    using Microsoft.EntityFrameworkCore;
+    using Login.Models.Requests;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.IdentityModel.Tokens;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using System.Text;
+
 
     public static class UserRoute
     {
@@ -12,12 +19,11 @@ namespace User.Routes
         {
             var route = app.MapGroup("user");
 
-            route.MapGet("", [Microsoft.AspNetCore.Authorization.Authorize] async (UserContext context) =>
+            route.MapGet("", [Authorize] async (UserContext context) =>
             {
                 var users = await context.Users.ToListAsync();
                 return Results.Ok(users);
             });
-
 
             route.MapPost("", async (UserRequest req, UserContext context) =>
             {
@@ -40,7 +46,7 @@ namespace User.Routes
                 });
             });
 
-            route.MapPut("/{id:guid}", [Microsoft.AspNetCore.Authorization.Authorize] async (Guid id, UserRequest req, UserContext context) =>
+            route.MapPut("/{id:guid}", [Authorize] async (Guid id, UserRequest req, UserContext context) =>
             {
                 var user = await context.Users.FindAsync(id);
                 if (user == null)
@@ -59,7 +65,7 @@ namespace User.Routes
                 return Results.Ok(user);
             });
 
-            route.MapDelete("/{id:guid}", [Microsoft.AspNetCore.Authorization.Authorize] async (Guid id, UserContext context) =>
+            route.MapDelete("/{id:guid}", [Authorize] async (Guid id, UserContext context) =>
             {
                 var user = await context.Users.FindAsync(id);
                 if (user == null)
@@ -71,6 +77,36 @@ namespace User.Routes
                 await context.SaveChangesAsync();
 
                 return Results.NoContent(); // 204 No Content
+            });
+
+            route.MapPost("/login", async (LoginRequest req, UserContext context) =>
+            {
+                var user = await context.Users.FirstOrDefaultAsync(u => u.Email == req.Email);
+                if (user == null)
+                    return Results.Unauthorized();
+
+                var hasher = new PasswordHasher<UserModel>();
+                var result = hasher.VerifyHashedPassword(user, user.Password, req.Password);
+                if (result != PasswordVerificationResult.Success)
+                    return Results.Unauthorized();
+
+                var claims = new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Name)
+                };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MyUltraSecureKeyThatIsAtLeast32Chars!!")); // use a mesma chave do Program.cs
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddHours(2),
+                    signingCredentials: creds
+                );
+
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+                return Results.Ok(new { token = tokenString });
             });
 
         }
