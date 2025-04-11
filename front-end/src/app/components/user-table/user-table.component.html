@@ -1,6 +1,5 @@
 <div class="user-table-container">
-    <input type="text" placeholder="Search users..." class="user-search" />
-    
+
     <table class="user-table">
     <thead>
         <tr>
@@ -14,7 +13,7 @@
         <tr *ngFor="let user of users; let i = index">
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.createdAt }}</td>
+            <td>{{ user.createdAt | date: 'yyyy-MM-dd' }}</td>
             <td class="actions-cell">
             <app-action-btn [index]="i" [user]="user"></app-action-btn>
             </td>

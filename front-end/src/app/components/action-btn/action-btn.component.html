@@ -1,8 +1,24 @@
 <div class="action-menu-wrapper">
     <button class="action-btn" (click)="toggleMenu()">⋯</button>
-
+  
     <div class="action-dropdown" *ngIf="menuOpen">
-        <button (click)="onEdit()">Edit</button>
-        <button (click)="onDelete()">Delete</button>
+      <button (click)="onEdit()">Edit</button>
+      <button (click)="onDelete()">Delete</button>
     </div>
-</div>  
+  
+    <app-modal-delete
+      *ngIf="showModal && modalType === 'delete'"
+      [user]="user"
+      (confirm)="confirmDelete()"
+      (cancel)="cancelDelete()"
+  ></app-modal-delete>
+  
+  <app-modal-update
+      *ngIf="showModal && modalType === 'edit'"
+      [user]="user"
+      (confirm)="confirmUpdate()"
+      (cancel)="cancelUpdate()"
+  ></app-modal-update>
+  
+  </div>
+  

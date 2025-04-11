@@ -1,16 +1,19 @@
+
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
 using User.Data;
 using User.Routes;
 
+DotNetEnv.Env.Load(); 
+
 var builder = WebApplication.CreateBuilder(args);
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "MyUltraSecureKeyThatIsAtLeast32Chars!!";
-
+var FRONTEND_URL = Environment.GetEnvironmentVariable("FRONTEND_URL");
+Console.WriteLine($"FRONTEND_URL: {FRONTEND_URL}");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -62,11 +65,24 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 // Configuração do banco de dados usando o UserContext
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularClient", policy =>
+    {
+        policy
+            .WithOrigins(FRONTEND_URL!) // ajuste a porta conforme a sua aplicação Angular
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
+
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -83,6 +99,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAngularClient");
 
 app.UseAuthentication();
 app.UseAuthorization();

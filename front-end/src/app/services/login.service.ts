@@ -18,7 +18,7 @@ export class LoginService {
     return this.httpClient.post<LoginResponse>(this.apiUrl, { email, password });
   }
 
-  // Verifica se o usuário está autenticado
+  // Verifica se o usuário está autejnticado
   isAuthenticated(): boolean {
     return !!localStorage.getItem('auth-token'); // Ou sessionStorage.getItem('auth-token');
   }
@@ -39,4 +39,5 @@ export class LoginService {
   logout(): void {
     localStorage.removeItem('auth-token'); // Ou sessionStorage.removeItem('auth-token');
   }
+  
 }

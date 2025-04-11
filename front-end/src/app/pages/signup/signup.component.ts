@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { LoginLayoutComponent } from '../../components/login-layout/login-layout.component';
 import { PrimaryInputComponent } from '../../components/primary-input/primary-input.component';
-import { LoginService } from '../../services/login.service';
+import { UserService } from '../../services/user.service'; // Alterado para userService com "u" minúsculo
 
 @Component({
   selector: 'app-signup',
@@ -22,7 +22,7 @@ export class SignupComponent {
 
   constructor(
     private router: Router,
-    private loginService: LoginService,
+    private userService: UserService, // Alterado para userService com "u" minúsculo
     private toastService: ToastrService
   ) {
     this.signupForm = new FormGroup({
@@ -34,18 +34,23 @@ export class SignupComponent {
   }
 
   submit() {
-    // Verifying if the passwords match
     if (this.signupForm.value.password !== this.signupForm.value.passwordConfirm) {
       this.toastService.error("Passwords do not match");
       return;
     }
 
-    this.loginService.login(
-      this.signupForm.value.email,
-      this.signupForm.value.password
-    ).subscribe({
-      next: () => this.toastService.success("Success"),
-      error: () => this.toastService.error("Error")
+    const { name, email, password } = this.signupForm.value;
+
+    this.userService.postUsers(name, email, password).subscribe({
+      next: () => {
+        this.toastService.success("User registered successfully!");
+        this.router.navigate([""]); // Redireciona para o login
+      },
+      error: (err: any) => {
+        console.error(err);
+        // Aqui, melhor exibir a mensagem de erro do backend, se disponível
+        this.toastService.error(err.error?.message || "Error registering user");
+      }
     });
   }
 
