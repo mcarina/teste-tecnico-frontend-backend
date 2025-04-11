@@ -1,19 +1,18 @@
 # Front-end with Angular
+🚀 Getting Started
 
-If you want to run only the frontend project, make sure you are inside the frontend project directory: `teste-tecnico-frontend-backend/front-end`.
-use the command below.
+To start the project, follow the steps below:
 
-To install and run the project, make sure you have **Docker** installed on your machine.
-
-```bash
-docker compose up -d
+- 🖥️ Frontend
+Go to the frontend directory:
 ```
-
-## Configuration
-Make sure to configure your .env file according to the .env.example for API connection.
-
-To access the project, open your browser and go to:
-
-```bash
-localhost:8080/
+cd frontend/
 ```
+Inside this folder, you will find a README.md with step-by-step instructions to run the frontend using Docker.
+
+- 🛠️ Backend
+Go to the backend directory:
+```
+cd backend/
+```
+Inside this folder, you will also find a README.md with detailed instructions to run the backend using Docker.
