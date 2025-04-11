@@ -25,6 +25,17 @@ namespace User.Routes
                 return Results.Ok(users);
             });
 
+            route.MapGet("/{id:guid}", [Authorize] async (Guid id, UserContext context) =>
+            {
+                var user = await context.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return Results.NotFound($"User with id {id} not found.");
+                }
+
+                return Results.Ok(user);
+            });
+
             route.MapPost("", async (UserRequest req, UserContext context) =>
             {
                 var tempUser = new UserModel(req.Name, req.Email, ""); // senha vazia só pra criar o objeto
@@ -54,16 +65,35 @@ namespace User.Routes
                     return Results.NotFound($"User with id {id} not found.");
                 }
 
-                user.Name = req.Name;
-                user.Email = req.Email;
-                user.Password = req.Password;
-                user.UpdatedAt = DateTime.UtcNow;
+                // Atualiza apenas se um novo valor for fornecido
+                if (!string.IsNullOrEmpty(req.Name))
+                {
+                    user.Name = req.Name;
+                }
+
+                if (!string.IsNullOrEmpty(req.Email))
+                {
+                    user.Email = req.Email;
+                }
+
+                if (!string.IsNullOrEmpty(req.Password))
+                {
+                    var hasher = new PasswordHasher<UserModel>();
+                    user.Password = hasher.HashPassword(user, req.Password);
+                }
+
+                // Atualizar o UpdatedAt apenas se algum campo foi alterado
+                if (!string.IsNullOrEmpty(req.Name) || !string.IsNullOrEmpty(req.Email) || !string.IsNullOrEmpty(req.Password))
+                {
+                    user.UpdatedAt = DateTime.UtcNow;
+                }
 
                 context.Users.Update(user);
                 await context.SaveChangesAsync();
 
                 return Results.Ok(user);
             });
+
 
             route.MapDelete("/{id:guid}", [Authorize] async (Guid id, UserContext context) =>
             {
