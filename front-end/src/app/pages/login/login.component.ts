@@ -23,6 +23,7 @@ interface loginForm{
   styleUrl: './login.component.css'
 })
 
+
 export class LoginComponent {
   loginForm: FormGroup;
 
@@ -37,14 +38,26 @@ export class LoginComponent {
     });
   }
 
-  submit(){
-    this.loginService.login(
-      this.loginForm.value.email,
-      this.loginForm.value.password
-    ).subscribe({
-      next: () => this.toastService.success("sucesso"),
-      error: () => this.toastService.error("error")
-    })
+
+  
+  submit() {
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+  
+      this.loginService.login(email, password).subscribe({
+        next: (response: any) => {
+          this.loginService.storeToken(response.token);
+          this.toastService.success("Login successfully!");
+          this.router.navigate(['/home']);
+        },
+        error: (error: any) => {
+          this.toastService.error("Error when logging in");
+          console.error("Error when logging in:", error);
+        }
+      });
+    } else {
+      this.toastService.warning("Fill in all fields correctly!");
+    }
   }
 
   navigate(){
